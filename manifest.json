@@ -1,0 +1,26 @@
+{
+  "manifest_version": 3,
+  "name": "Smart Health Clock",
+  "version": "1.0",
+  "description": "Health reminders based on real clock time",
+
+"permissions": [
+  "alarms",
+  "notifications",
+  "storage"
+],
+
+  "background": {
+    "service_worker": "background.js"
+  },
+
+  "action": {
+    "default_popup": "popup.html"
+  },
+
+  "icons": {
+    "128": "icon128.png"
+  },
+   "options_page": "options.html"
+  
+}
