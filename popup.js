@@ -15,6 +15,22 @@ document.addEventListener("DOMContentLoaded", async () => {
     
     // Setup event listeners
     setupEventListeners();
+
+    const postureBtn = document.getElementById("postureBtn");
+    if (postureBtn) {
+        postureBtn.addEventListener("click", () => {
+            console.log("Posture button clicked - opening posture page");
+            try {
+                chrome.tabs.create({ 
+                    url: chrome.runtime.getURL("posture.html"),
+                    active: true 
+                });
+            } catch (error) {
+                console.error("Error opening posture page:", error);
+                alert("Could not open posture page. Please check if posture.html exists.");
+            }
+        });
+    }
 });
 
 // ============= TIMER FUNCTIONS =============
@@ -501,3 +517,23 @@ function generateAITip(stats) {
     
     return "🔥 Keep going! Small healthy habits add up to big results!";
 }
+
+// Add to setupEventListeners()
+document.getElementById("sendReportBtn")?.addEventListener("click", async () => {
+    const settings = await getSettings();
+    if (!settings.userEmail || !settings.emailNotifications) {
+        alert('❌ Please enable email notifications in settings first');
+        return;
+    }
+    
+    const btn = document.getElementById("sendReportBtn");
+    const originalText = btn.textContent;
+    btn.textContent = "📧 Sending...";
+    btn.disabled = true;
+    
+    chrome.runtime.sendMessage({ action: 'sendTestReport' }, (response) => {
+        btn.textContent = originalText;
+        btn.disabled = false;
+        alert(response?.success ? '✅ Report sent!' : '⚠️ Could not send report');
+    });
+});
